@@ -1,0 +1,44 @@
+.calendar {
+  position: absolute;
+  z-index: 9999;
+  width: 250px;
+  top: 15px;
+  right: 350px;
+  background: rgba(168, 150, 150, 0.7);
+  padding: 1rem;
+  border-radius: 5px;
+  @include media(sm) {
+    width: 90%;
+  }
+
+  input {
+    display: block;
+    margin: 0.5rem 0;
+    padding: 0.5rem 0;
+    width: 100%;
+  }
+
+  .information {
+    margin-top: 1rem;
+  }
+
+  .information {
+    font-size: 14px;
+  }
+  .fromTo {
+    font-size: 14px;
+    margin: 0;
+  }
+
+  .group-buttons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+    button {
+      padding: 0.8rem;
+      cursor: pointer;
+      border: none;
+      border-radius: 5px;
+    }
+  }
+}

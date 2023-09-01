@@ -1,0 +1,89 @@
+* {
+  font-family: "Open Sans";
+}
+
+.calendar {
+  position: absolute;
+  z-index: 9999;
+  width: 250px;
+  top: 15px;
+  right: 350px;
+  background: rgba(168, 150, 150, 0.7);
+  padding: 1rem;
+  border-radius: 5px;
+}
+@media (min-width: 360px) and (max-width: 768px) {
+  .calendar {
+    width: 90%;
+  }
+}
+.calendar input {
+  display: block;
+  margin: 0.5rem 0;
+  padding: 0.5rem 0;
+  width: 100%;
+}
+.calendar .information {
+  margin-top: 1rem;
+}
+.calendar .information {
+  font-size: 14px;
+}
+.calendar .fromTo {
+  font-size: 14px;
+  margin: 0;
+}
+.calendar .group-buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+}
+.calendar .group-buttons button {
+  padding: 0.8rem;
+  cursor: pointer;
+  border: none;
+  border-radius: 5px;
+}
+
+.lds-ring {
+  display: inline-block;
+  position: relative;
+  width: 80px;
+  height: 80px;
+}
+
+.lds-ring div {
+  box-sizing: border-box;
+  display: block;
+  position: absolute;
+  width: 64px;
+  height: 64px;
+  margin: 8px;
+  border: 8px solid #fff;
+  border-radius: 50%;
+  animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+  border-color: #fff transparent transparent transparent;
+}
+
+.lds-ring div:nth-child(1) {
+  animation-delay: -0.45s;
+}
+
+.lds-ring div:nth-child(2) {
+  animation-delay: -0.3s;
+}
+
+.lds-ring div:nth-child(3) {
+  animation-delay: -0.15s;
+}
+
+@keyframes lds-ring {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/*# sourceMappingURL=main.css.map */

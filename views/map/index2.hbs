@@ -1,0 +1,403 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="initial-scale=1,user-scalable=no,maximum-scale=1,width=device-width">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <link rel="stylesheet" href="css/leaflet.css">
+  <link rel="stylesheet" href="css/qgis2web.css">
+  <link rel="stylesheet" href="css/fontawesome-all.min.css">
+  <link rel="stylesheet" href="css/filter.css">
+  <link rel="stylesheet" href="css/nouislider.min.css">
+
+  <link rel="stylesheet" href="styles/main.css">
+  <link rel="stylesheet" href="styles/global.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300&display=swap" rel="stylesheet">
+  <link href="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.css" rel="stylesheet">
+  <script src="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js"></script>
+  <style>
+    html,
+    body,
+    #map {
+      width: 100%;
+      height: 100%;
+      padding: 0;
+      margin: 0;
+    }
+  </style>
+  <title></title>
+</head>
+
+<body>
+  <div id="app"></div>
+
+  <div id="map"></div>
+  <script crossorigin src="https://unpkg.com/react@17/umd/react.development.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"
+    integrity="sha512-qTXRIMyZIFb8iQcfjXWCO8+M5Tbc38Qi5WzdPOYZHIlZpzBHG3L3by84BBBOiRGiEb7KKtAOAs5qYdUiZiQNNQ=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.23.0/locale/es.js"></script>
+
+  <script src="js/qgis2web_expressions.js"></script>
+  <script src="js/leaflet.js"></script>
+  <script src="js/multi-style-layer.js"></script>
+  <script src="js/leaflet.rotatedMarker.js"></script>
+  <script src="js/leaflet.pattern.js"></script>
+  <script src="js/leaflet-hash.js"></script>
+  <script src="js/Autolinker.min.js"></script>
+  <script src="js/rbush.min.js"></script>
+  <script src="js/labelgun.min.js"></script>
+  <script src="js/labels.js"></script>
+  <script src="js/tailDT.js"></script>
+  <script src="js/nouislider.min.js"></script>
+  <script src="js/wNumb.js"></script>
+  <script src="data/Departamentos_Bolivia_1.js"></script>
+
+  <script src="mycode/mapServices.js"></script>
+  <script src="mycode/react.js" type="text/jsx"></script>
+  <script>
+    var map = L.map('map', {
+      zoomControl: true, maxZoom: 15, minZoom: 2
+    })
+    var hash = new L.Hash(map);
+    map.attributionControl.setPrefix('<a href="https://github.com/tomchadwin/qgis2web" target="_blank">qgis2web</a> &middot; <a href="https://leafletjs.com" title="A JS library for interactive maps">Leaflet</a> &middot; <a href="https://qgis.org">QGIS</a>');
+    var autolinker = new Autolinker({truncate: {length: 30, location: 'smart'}});
+    var bounds_group = new L.featureGroup([]);
+    function setBounds() {
+      if (bounds_group.getLayers().length) {
+        map.fitBounds(bounds_group.getBounds());
+      }
+    }
+    map.createPane('pane_CapaBase_0');
+    map.getPane('pane_CapaBase_0').style.zIndex = 400;
+    var layer_CapaBase_0 = L.tileLayer('http://mt1.google.com/vt/lyrs=p&x={x}&y={y}&z={z}', {
+      pane: 'pane_CapaBase_0',
+      opacity: 1.0,
+      attribution: '',
+      minZoom: 2,
+      maxZoom: 15,
+      minNativeZoom: 0,
+      maxNativeZoom: 22
+    });
+    layer_CapaBase_0;
+    map.addLayer(layer_CapaBase_0);
+    function pop_Departamentos_Bolivia_1(feature, layer) {
+      var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['objectid'] !== null ? autolinker.link(feature.properties['objectid'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['COD_DEP'] !== null ? autolinker.link(feature.properties['COD_DEP'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2"><strong>DEPARTAMEN</strong><br />' + (feature.properties['DEPARTAMEN'] !== null ? autolinker.link(feature.properties['DEPARTAMEN'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">DESCRIPCIO</th>\
+                        <td>' + (feature.properties['DESCRIPCIO'] !== null ? autolinker.link(feature.properties['DESCRIPCIO'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+      layer.bindPopup(popupContent, {maxHeight: 400});
+    }
+
+    function style_Departamentos_Bolivia_1_0() {
+      return {
+        pane: 'pane_Departamentos_Bolivia_1',
+        interactive: true,
+      }
+    }
+    function style_Departamentos_Bolivia_1_1() {
+      return {
+        pane: 'pane_Departamentos_Bolivia_1',
+        opacity: 1,
+        color: 'rgba(38,89,128,1.0)',
+        dashArray: '',
+        lineCap: 'butt',
+        lineJoin: 'miter',
+        weight: 1.0,
+        fillOpacity: 0,
+        interactive: true,
+      }
+    }
+    map.createPane('pane_Departamentos_Bolivia_1');
+    map.getPane('pane_Departamentos_Bolivia_1').style.zIndex = 401;
+    map.getPane('pane_Departamentos_Bolivia_1').style['mix-blend-mode'] = 'normal';
+
+
+
+    var layer_Departamentos_Bolivia_1 = new L.geoJson.multiStyle(json_Departamentos_Bolivia_1, {
+      attribution: '',
+      interactive: true,
+      dataVar: 'json_Departamentos_Bolivia_1',
+      layerName: 'layer_Departamentos_Bolivia_1',
+      pane: 'pane_Departamentos_Bolivia_1',
+      onEachFeature: pop_Departamentos_Bolivia_1,
+      styles: [style_Departamentos_Bolivia_1_0, style_Departamentos_Bolivia_1_1,]
+    });
+    bounds_group.addLayer(layer_Departamentos_Bolivia_1);
+    map.addLayer(layer_Departamentos_Bolivia_1);
+    function pop_Focosdecalor_2(feature, layer) {
+      var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['latitude'] !== null ? autolinker.link(feature.properties['latitude'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['longitude'] !== null ? autolinker.link(feature.properties['longitude'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2"><strong>brightness</strong><br />' + (feature.properties['brightness'] !== null ?
+          autolinker.link((feature.properties['brightness']).toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+      layer.bindPopup(popupContent, {maxHeight: 400});
+    }
+
+    function style_Focosdecalor_2_0(feature) {
+      if (feature.properties['brightness'] >= 300.050000 && feature.properties['brightness'] <= 307.493333) {
+        return {
+          pane: 'pane_Focosdecalor_2',
+          radius: 4.0,
+          opacity: 1,
+          color: 'rgba(35,35,35,1.0)',
+          dashArray: '',
+          lineCap: 'butt',
+          lineJoin: 'miter',
+          weight: 1,
+          fill: true,
+          fillOpacity: 1,
+          fillColor: 'rgba(45,255,91,1.0)',
+          interactive: true,
+        }
+      }
+      if (feature.properties['brightness'] >= 307.493333 && feature.properties['brightness'] <= 319.180000) {
+        return {
+          pane: 'pane_Focosdecalor_2',
+          radius: 4.0,
+          opacity: 1,
+          color: 'rgba(35,35,35,1.0)',
+          dashArray: '',
+          lineCap: 'butt',
+          lineJoin: 'miter',
+          weight: 1,
+          fill: true,
+          fillOpacity: 1,
+          fillColor: 'rgba(150,128,45,1.0)',
+          interactive: true,
+        }
+      }
+      if (feature.properties['brightness'] >= 319.180000 && feature.properties['brightness'] <= 452.590000) {
+        return {
+          pane: 'pane_Focosdecalor_2',
+          radius: 4.0,
+          opacity: 1,
+          color: 'rgba(35,35,35,1.0)',
+          dashArray: '',
+          lineCap: 'butt',
+          lineJoin: 'miter',
+          weight: 1,
+          fill: true,
+          fillOpacity: 1,
+          fillColor: 'rgba(255,0,0,1.0)',
+          interactive: true,
+        }
+      }
+    }
+    map.createPane('pane_Focosdecalor_2');
+    map.getPane('pane_Focosdecalor_2').style.zIndex = 402;
+    map.getPane('pane_Focosdecalor_2').style['mix-blend-mode'] = 'normal';
+
+
+    const pintarMapa = (json_Focosdecalor_2) => {
+      var elem = document.querySelectorAll(".leaflet-interactive");
+      elem.forEach(element => {
+        element.remove();
+      })
+
+
+      var layer_Focosdecalor_2 = new L.geoJson(json_Focosdecalor_2, {
+        attribution: '',
+        interactive: true,
+        dataVar: 'json_Focosdecalor_2',
+        layerName: 'layer_Focosdecalor_2',
+        pane: 'pane_Focosdecalor_2',
+        onEachFeature: pop_Focosdecalor_2,
+        pointToLayer: function (feature, latlng) {
+          var context = {
+            feature: feature,
+            variables: {}
+          };
+          return L.circleMarker(latlng, style_Focosdecalor_2_0(feature));
+        },
+      });
+      bounds_group.addLayer(layer_Focosdecalor_2);
+      map.addLayer(layer_Focosdecalor_2);
+      var baseMaps = {};
+
+      const table = document.querySelector('.leaflet-control-layers.leaflet-control');
+
+      if (table) {
+        table.remove();
+      }
+      L.control.layers(baseMaps, {'Focos de calor<br /><table id="table"><tr><td style="text-align: center;"><img src="legend/Focosdecalor_2_300130750.png" /></td><td>300,1 - 307,5</td></tr><tr><td style="text-align: center;"><img src="legend/Focosdecalor_2_307531921.png" /></td><td>307,5 - 319,2</td></tr><tr><td style="text-align: center;"><img src="legend/Focosdecalor_2_319245262.png" /></td><td>319,2 - 452,6</td></tr></table>': layer_Focosdecalor_2, '<img src="legend/Departamentos_Bolivia_1.png" /> Departamentos_Bolivia': layer_Departamentos_Bolivia_1, "Capa Base": layer_CapaBase_0, }).addTo(map);
+      setBounds();
+    }
+    var mapDiv = document.getElementById('map');
+    var row = document.createElement('div');
+    row.className = "row";
+    row.id = "all";
+    row.style.height = "100%";
+    var col1 = document.createElement('div');
+    col1.className = "col9";
+    col1.id = "mapWindow";
+    col1.style.height = "99%";
+    col1.style.width = "100%";
+    col1.style.display = "inline-block";
+    var col2 = document.createElement('div');
+    col2.className = "col3";
+    col2.id = "menu";
+    col2.style.display = "inline-block";
+    mapDiv.parentNode.insertBefore(row, mapDiv);
+    document.getElementById("all").appendChild(col1);
+    document.getElementById("all").appendChild(col2);
+    col1.appendChild(mapDiv)
+    var Filters = {"DEPARTAMEN": "str"};
+    function filterFunc() {
+      map.eachLayer(function (lyr) {
+        if ("options" in lyr && "dataVar" in lyr["options"]) {
+          features = this[lyr["options"]["dataVar"]].features.slice(0);
+          try {
+            for (key in Filters) {
+              keyS = key.replace(/[^a-zA-Z0-9_]/g, "")
+              if (Filters[key] == "str" || Filters[key] == "bool") {
+                var selection = [];
+                var options = document.getElementById("sel_" + keyS).options
+                for (var i = 0; i < options.length; i++) {
+                  if (options[i].selected) selection.push(options[i].value);
+                }
+                try {
+                  if (key in features[0].properties) {
+                    for (i = features.length - 1;
+                      i >= 0; --i) {
+                      if (selection.indexOf(
+                        features[i].properties[key]) < 0
+                        && selection.length > 0) {
+                        features.splice(i, 1);
+                      }
+                    }
+                  }
+                } catch (err) {
+                }
+              }
+              if (Filters[key] == "int") {
+                sliderVals = document.getElementById(
+                  "div_" + keyS).noUiSlider.get();
+                try {
+                  if (key in features[0].properties) {
+                    for (i = features.length - 1; i >= 0; --i) {
+                      if (parseInt(features[i].properties[key])
+                        < sliderVals[0]
+                        || parseInt(features[i].properties[key])
+                        > sliderVals[1]) {
+                        features.splice(i, 1);
+                      }
+                    }
+                  }
+                } catch (err) {
+                }
+              }
+              if (Filters[key] == "real") {
+                sliderVals = document.getElementById(
+                  "div_" + keyS).noUiSlider.get();
+                try {
+                  if (key in features[0].properties) {
+                    for (i = features.length - 1; i >= 0; --i) {
+                      if (features[i].properties[key]
+                        < sliderVals[0]
+                        || features[i].properties[key]
+                        > sliderVals[1]) {
+                        features.splice(i, 1);
+                      }
+                    }
+                  }
+                } catch (err) {
+                }
+              }
+              if (Filters[key] == "date"
+                || Filters[key] == "datetime"
+                || Filters[key] == "time") {
+                try {
+                  if (key in features[0].properties) {
+                    HTMLkey = key.replace(/[&\/\\#,+()$~%.'":*?<>{} ]/g, '');
+                    startdate = document.getElementById("dat_" +
+                      HTMLkey + "_date1").value.replace(" ", "T");
+                    enddate = document.getElementById("dat_" +
+                      HTMLkey + "_date2").value.replace(" ", "T");
+                    for (i = features.length - 1; i >= 0; --i) {
+                      if (features[i].properties[key] < startdate
+                        || features[i].properties[key] > enddate) {
+                        features.splice(i, 1);
+                      }
+                    }
+                  }
+                } catch (err) {
+                }
+              }
+            }
+          } catch (err) {
+          }
+          this[lyr["options"]["layerName"]].clearLayers();
+          this[lyr["options"]["layerName"]].addData(features);
+        }
+      })
+    }
+    document.getElementById("menu").appendChild(
+      document.createElement("div"));
+    var div_DEPARTAMEN = document.createElement('div');
+    div_DEPARTAMEN.id = "div_DEPARTAMEN";
+    div_DEPARTAMEN.className = "filterselect";
+    document.getElementById("menu").appendChild(div_DEPARTAMEN);
+    sel_DEPARTAMEN = document.createElement('select');
+    sel_DEPARTAMEN.multiple = true;
+    sel_DEPARTAMEN.size = 10;
+    sel_DEPARTAMEN.id = "sel_DEPARTAMEN";
+    var DEPARTAMEN_options_str = "<option value='' unselected></option>";
+    sel_DEPARTAMEN.onchange = function () {filterFunc()};
+    DEPARTAMEN_options_str += '<option value="NULL">NULL</option>';
+    DEPARTAMEN_options_str += '<option value="Beni">Beni</option>';
+    DEPARTAMEN_options_str += '<option value="Chuquisaca">Chuquisaca</option>';
+    DEPARTAMEN_options_str += '<option value="Cochabamba">Cochabamba</option>';
+    DEPARTAMEN_options_str += '<option value="La Paz">La Paz</option>';
+    DEPARTAMEN_options_str += '<option value="Oruro">Oruro</option>';
+    DEPARTAMEN_options_str += '<option value="Pando">Pando</option>';
+    DEPARTAMEN_options_str += '<option value="Potosí">Potosí</option>';
+    DEPARTAMEN_options_str += '<option value="Santa Cruz">Santa Cruz</option>';
+    DEPARTAMEN_options_str += '<option value="Tarija">Tarija</option>';
+    sel_DEPARTAMEN.innerHTML = DEPARTAMEN_options_str;
+    div_DEPARTAMEN.appendChild(sel_DEPARTAMEN);
+    var lab_DEPARTAMEN = document.createElement('div');
+    lab_DEPARTAMEN.innerHTML = 'DEPARTAMEN';
+    lab_DEPARTAMEN.className = 'filterlabel';
+    div_DEPARTAMEN.appendChild(lab_DEPARTAMEN);
+    var reset_DEPARTAMEN = document.createElement('div');
+    reset_DEPARTAMEN.innerHTML = 'clear filter';
+    reset_DEPARTAMEN.className = 'filterlabel';
+    reset_DEPARTAMEN.onclick = function () {
+      var options = document.getElementById("sel_DEPARTAMEN").options;
+      for (var i = 0; i < options.length; i++) {
+        options[i].selected = false;
+      }
+      filterFunc();
+    };
+    div_DEPARTAMEN.appendChild(reset_DEPARTAMEN);
+
+  </script>
+</body>
+
+</html>
