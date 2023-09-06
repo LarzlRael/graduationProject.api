@@ -1,157 +1,65 @@
-import { Controller, Get, Res, Param, Body, Post } from '@nestjs/common';
+import { Controller, Get, Param, Body, Post } from '@nestjs/common';
 import { AnalysisService } from './analysis.service';
-import { Response } from 'express';
+
 import { AnalysisDto, CountDto } from './dto/analysis.dto';
 
 @Controller('analysis')
 export class AnalysisController {
   constructor(private analysisService: AnalysisService) {}
   @Get('dates')
-  async getFirstAndLastDate(@Res() res: Response) {
-    const dates = await this.analysisService.getFirstAndLastDate();
-    res.json({
-      ok: true,
-      dates,
-    });
+  getFirstAndLastDate() {
+    return this.analysisService.getFirstAndLastDate();
   }
   @Get('available-mounth')
-  async getMonthYearAvailabes(@Res() res: Response) {
-    const years = await this.analysisService.getMonthYearAvailabes();
-    res.json({
-      ok: true,
-      years,
-    });
+  getMonthYearAvailabes() {
+    return this.analysisService.getMonthYearAvailabes();
   }
 
   @Post('getnheatsourcebydepartament')
-  async getNHeatSourceByDepartament(
-    @Res() res: Response,
-    @Body() analysisDto: AnalysisDto,
-  ) {
-    const resp = await this.analysisService.getNHeatSourceByDepartament(
-      analysisDto,
-    );
-    return res.json({
-      ok: true,
-      resp,
-    });
+  async getNHeatSourceByDepartament(@Body() analysisDto: AnalysisDto) {
+    return this.analysisService.getNHeatSourceByDepartament(analysisDto);
   }
 
   @Get('nombres_provincias/:departamento')
-  async getNamesProvincias(
-    @Res() res: Response,
-    @Param('departamento') departamento,
-  ) {
-    const resp = await this.analysisService.getNamesProvincias(departamento);
-    return res.json({
-      ok: true,
-      resp,
-    });
+  getNamesProvincias(@Param('departamento') departamento) {
+    return this.analysisService.getNamesProvincias(departamento);
   }
   @Get('nombres_municipios/:departamento')
-  async getNombresProvincias(
-    @Res() res: Response,
-    @Param('departamento') departamento,
-  ) {
-    const resp = await this.analysisService.getNamesMunicipios(departamento);
-    return res.json({
-      ok: true,
-      resp,
-    });
+  getNombresProvincias(@Param('departamento') departamento) {
+    return this.analysisService.getNamesMunicipios(departamento);
   }
 
   @Post('getheatsourcesbyprovincia')
-  async getHeatSourcesByProvincia(
-    @Res() res: Response,
-    @Body() analysisDto: AnalysisDto,
-  ) {
-    const resp = await this.analysisService.getHeatSourcesByProvincia(
-      analysisDto,
-    );
-    return res.json({
-      ok: true,
-      resp,
-    });
+  getHeatSourcesByProvincia(@Body() analysisDto: AnalysisDto) {
+    return this.analysisService.getHeatSourcesByProvincia(analysisDto);
   }
 
   @Post('getheatsourcesbymunicio')
-  async getHeatSourcesByMunicio(
-    @Res() res: Response,
-    @Body() analysisDto: AnalysisDto,
-  ) {
-    const resp = await this.analysisService.getHeatSourcesByMunicio(
-      analysisDto,
-    );
-    return res.json({
-      ok: true,
-      resp,
-    });
+  async getHeatSourcesByMunicio(@Body() analysisDto: AnalysisDto) {
+    return this.analysisService.getHeatSourcesByMunicio(analysisDto);
   }
 
   @Post('countdepartamentosprovincias')
-  async getCountDepartamentosProvincias(
-    @Res() res: Response,
-    @Body() analysisDto: AnalysisDto,
-  ) {
-    const resp = await this.analysisService.getCountDepartamentosProvincias(
-      analysisDto,
-    );
-    return res.json({
-      ok: true,
-      resp,
-    });
+  async getCountDepartamentosProvincias(@Body() analysisDto: AnalysisDto) {
+    return this.analysisService.getCountDepartamentosProvincias(analysisDto);
   }
 
   @Post('countdepartamentosmunicipios')
-  async getCountDepartamentosMunicipios(
-    @Res() res: Response,
-    @Body() analysisDto: AnalysisDto,
-  ) {
-    const resp = await this.analysisService.getCountDepartamentosMunicipios(
-      analysisDto,
-    );
-    return res.json({
-      ok: true,
-      resp,
-    });
+  getCountDepartamentosMunicipios(@Body() analysisDto: AnalysisDto) {
+    return this.analysisService.getCountDepartamentosMunicipios(analysisDto);
   }
 
   @Post('getcountdepartamentos')
-  async getCountDepartamentos(
-    @Res() res: Response,
-    @Body() analysisDto: AnalysisDto,
-  ) {
-    const resp = await this.analysisService.getCountDepartamentos(analysisDto);
-    return res.json({
-      ok: true,
-      resp,
-    });
+  getCountDepartamentos(@Body() analysisDto: AnalysisDto) {
+    return this.analysisService.getCountDepartamentos(analysisDto);
   }
   @Post('getcountheatsourcesbymonth')
-  async getCountHeatSourcesByMonth(
-    @Res() res: Response,
-    @Body() countDto: CountDto,
-  ) {
-    const resp = await this.analysisService.getCountHeatSourcesByMonth(
-      countDto,
-    );
-    return res.json({
-      ok: true,
-      resp,
-    });
+  getCountHeatSourcesByMonth(@Body() countDto: CountDto) {
+    return this.analysisService.getCountHeatSourcesByMonth(countDto);
   }
 
   @Post('getcountheatsourcesbymonths')
-  async getCountHeatSourcesByMonths(
-    @Res() res: Response,
-    @Body() countDto: CountDto,
-  ) {
-    const resp = await this.analysisService.getCountHeatSourceByMonths(
-      countDto,
-    );
-    return res.json({
-      ok: true,
-      resp,
-    });
+  getCountHeatSourcesByMonths(@Body() countDto: CountDto) {
+    return this.analysisService.getCountHeatSourceByMonths(countDto);
   }
 }

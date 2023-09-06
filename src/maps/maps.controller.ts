@@ -30,7 +30,7 @@ export class MapsController {
   constructor(
     private mapsService: MapsService,
     private analisysServices: AnalysisService,
-  ) { }
+  ) {}
 
   /* @Get('*')
   showMenu(@Res() res: Response) {
@@ -50,70 +50,46 @@ export class MapsController {
   }
 
   @Post('mapinfo')
-  async getQuery(@Res() res: Response) {
+  async getQuery() {
     const result = await this.mapsService.executeQuery(
       `SELECT *, st_x(geometry) as lng, st_y(geometry) as lat  FROM   fire_one_year WHERE acq_date='2020-10-11';`,
     );
 
-    return res.json(result);
+    return result;
   }
   @Get('getbyDate/:date')
-  async getHeatSourcesByDate(@Res() res: Response, @Param('date') date) {
-    const result = await this.mapsService.getHeatSourcesByDate(date);
-    return res.json(result);
+  getHeatSourcesByDate(@Param('date') date) {
+    return this.mapsService.getHeatSourcesByDate(date);
   }
 
   @Post('getbybetweendate')
-  async getbyBetweenDate(@Res() res: Response, @Body() mapDto: MapDto) {
-    const result = await this.mapsService.getHeatSourcesByBetweenDate(mapDto);
-    return res.json(result);
+  getbyBetweenDate(@Body() mapDto: MapDto) {
+    return this.mapsService.getHeatSourcesByBetweenDate(mapDto);
   }
 
   @Get('getdepartamento/:departamento')
-  async getDepartamentPolygon(
-    @Res() res: Response,
-    @Param('departamento') departamento,
-  ) {
-    const result = await this.mapsService.getDepartamentPolygon(departamento);
-    return res.json(result);
+  getDepartamentPolygon(@Param('departamento') departamento) {
+    return this.mapsService.getDepartamentPolygon(departamento);
   }
 
   @Post('getheatsourcesbydeparment')
-  async getHeatSourcesByDeparment(
-    @Res() res: Response,
-    @Body() mapDto: MapDto,
-  ) {
-    const result = await this.mapsService.getHeatSourcesByDeparment(mapDto);
-    return res.json(result);
+  async getHeatSourcesByDeparment(@Body() mapDto: MapDto) {
+    return this.mapsService.getHeatSourcesByDeparment(mapDto);
   }
 
   @Post('getheatsourcesbyprovincia')
-  async getHeatSourcesByProvincia(
-    @Res() res: Response,
-    @Body() mapDto: MapDto,
-  ) {
-
-    const result = await this.mapsService.getHeatSourcesByProvincia(mapDto);
-    return res.json(result);
+  getHeatSourcesByProvincia(@Body() mapDto: MapDto) {
+    return this.mapsService.getHeatSourcesByProvincia(mapDto);
   }
 
   @Get('getmidPoint/:location/:name')
-  async getMidPoint(
-    @Res() res: Response,
-    @Param('location') location,
-    @Param('name') name,
-  ) {
-    const result = await this.mapsService.getMiddlePoint(location, name);
-    return res.json(result);
+  getMidPoint(@Param('location') location, @Param('name') name) {
+    return this.mapsService.getMiddlePoint(location, name);
   }
 
   @Post('getheatsourcesbymunicipio')
-  async getHeatSourcesByMunicipio(
-    @Res() res: Response,
-    @Body() mapDto: MapDto,
-  ) {
-    const result = await this.mapsService.getHeatSourcesByMunicipio(mapDto);
-    return res.json(result);
+  getHeatSourcesByMunicipio(@Body() mapDto: MapDto) {
+    return this.mapsService.getHeatSourcesByMunicipio(mapDto);
   }
 
   @Post('uploadcsvupdate')
