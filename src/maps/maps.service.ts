@@ -119,36 +119,53 @@ export class MapsService {
   }
 
   async getMiddlePoint(table: string, name: string) {
-    let column = '';
-    switch (table) {
-      case 'departamentos':
-        column = 'nombre_departamento';
-        break;
-      case 'municipios':
-        column = 'nombre_municipio';
-        break;
-      case 'provincias':
-        column = 'nombre_provincia';
-        break;
-      default:
-        column = '';
-    }
-    if (column !== '') {
-      try {
-        const res = await this.pool.query(
-          `SELECT st_centroid(st_union(geom)) as geom FROM ${table} where ${column} = '${name}'`,
-        );
+    const columns = {
+      departamentos: 'nombre_departamento',
+      municipios: 'nombre_municipio',
+      provincias: 'nombre_provincia',
+    };
 
-        const latlong = await this.pool.query(
-          `SELECT ST_X($1) as latitude, ST_Y($1) as  longitude ;`,
-          [res.rows[0].geom],
-        );
-        return latlong.rows[0];
-      } catch (error) {
-        console.log(error);
-      }
-    } else {
+    const column = columns[table];
+
+    if (!column) {
       return '';
     }
+
+    try {
+      const centroidQuery = `
+        SELECT ST_X(centroid) AS latitude, ST_Y(centroid) AS longitude
+        FROM (
+          SELECT ST_Centroid(ST_Union(geom)) AS centroid
+          FROM ${table}
+          WHERE ${column} = $1
+        ) AS subquery
+      `;
+
+      const geojsonQuery = `
+        SELECT ST_AsGeoJSON(geom)::json AS geojson
+        FROM ${table}
+        WHERE ${column} = $1
+      `;
+
+      const [centroidResult, geojsonResult] = await Promise.all([
+        this.pool.query(centroidQuery, [name]),
+        this.pool.query(geojsonQuery, [name]),
+      ]);
+
+      return {
+        coordinates: centroidResult.rows[0],
+        poligono: geojsonResult.rows[0].geojson,
+      };
+    } catch (error) {
+      console.log(error);
+      return '';
+    }
+  }
+  async getDepartamentPoligones(departament: string) {
+    const poligones = await this.pool.query(
+      `SELECT ST_AsGeoJSON(geom)::json AS geojson FROM ${departamentos.tableName} WHERE ${departamentos.columns.name} = $1`,
+      [departament],
+    );
+    return poligones.rows[0].geojson;
   }
 }

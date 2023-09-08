@@ -6,7 +6,6 @@ import {
   Post,
   Render,
   Res,
-  HttpStatus,
   UploadedFile,
   UseInterceptors,
   UploadedFiles,
@@ -73,7 +72,7 @@ export class MapsController {
   }
 
   @Post('getheatsourcesbydeparment')
-  async getHeatSourcesByDeparment(@Body() mapDto: MapDto) {
+  getHeatSourcesByDeparment(@Body() mapDto: MapDto) {
     return this.mapsService.getHeatSourcesByDeparment(mapDto);
   }
 
@@ -85,6 +84,10 @@ export class MapsController {
   @Get('getmidPoint/:location/:name')
   getMidPoint(@Param('location') location, @Param('name') name) {
     return this.mapsService.getMiddlePoint(location, name);
+  }
+  @Get('getDepartmentPoligonoes/:departament')
+  getDepartamentPoligones(@Param('departament') departament) {
+    return this.mapsService.getDepartamentPoligones(departament);
   }
 
   @Post('getheatsourcesbymunicipio')

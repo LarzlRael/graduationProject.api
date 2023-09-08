@@ -4,6 +4,7 @@ export enum OrderBy {
 }
 
 export enum Departamento {
+  bolivia = 'Bolivia',
   lapaz = 'La Paz',
   oruro = 'Oruro',
   potosi = 'Potosi',

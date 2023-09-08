@@ -97,18 +97,31 @@ export class AnalysisService {
   }
 
   async getNamesProvincias(nombreDepartamento: string) {
-    const query = `select nombre_provincia,departamento from provincias
+    const query = `select nombre_provincia from provincias
     where departamento = $1 order by nombre_provincia ASC`;
 
     const res = await this.pool.query(query, [nombreDepartamento]);
     return res.rows;
   }
   async getNamesMunicipios(nombreDepartamento: string) {
-    const query = `select nombre_municipio, provincia, departamento from ${municipios.tableName}
+    const query = `select nombre_municipio, provincia from ${municipios.tableName}
     where departamento = $1 order by nombre_municipio ASC`;
 
     const res = await this.pool.query(query, [nombreDepartamento]);
     return res.rows;
+  }
+
+  async getNamesNombresProvincias(nombreDepartamento: string) {
+    try {
+      const [provinciasResult, municipiosResult] = await Promise.all([
+        this.getNamesProvincias(nombreDepartamento),
+        this.getNamesMunicipios(nombreDepartamento),
+      ]);
+      return {
+        provincias: provinciasResult.map((row) => row.nombre_provincia),
+        municipios: municipiosResult.map((row) => row.nombre_municipio),
+      };
+    } catch (error) {}
   }
 
   async getHeatSourcesByProvincia(analysisDto: AnalysisDto) {

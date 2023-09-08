@@ -1,19 +1,17 @@
-import { Body, Controller, Post, Res, Get, UseGuards } from '@nestjs/common';
+import { Body, Controller, Post, Get, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthCredentialsDto } from './dto/auth-credentials.dto';
-import { Response } from 'express';
 import { AuthGuard } from '@nestjs/passport';
 import { GetUser } from './get-user.decorator';
 import { User } from './user.entity';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private authService: AuthService) { }
+  constructor(private authService: AuthService) {}
 
   @Post('/signup')
-  signUp(@Res() res: Response, @Body() authCredentialsDto: AuthCredentialsDto) {
-    this.authService.signUp(authCredentialsDto);
-    return res.json({ ok: true, msg: 'cuenta creada correctamente' });
+  signUp(@Body() authCredentialsDto: AuthCredentialsDto) {
+    return this.authService.signUp(authCredentialsDto);
   }
 
   @Post('/signin')

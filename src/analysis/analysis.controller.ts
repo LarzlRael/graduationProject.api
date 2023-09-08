@@ -16,7 +16,7 @@ export class AnalysisController {
   }
 
   @Post('getnheatsourcebydepartament')
-  async getNHeatSourceByDepartament(@Body() analysisDto: AnalysisDto) {
+  getNHeatSourceByDepartament(@Body() analysisDto: AnalysisDto) {
     return this.analysisService.getNHeatSourceByDepartament(analysisDto);
   }
 
@@ -28,6 +28,10 @@ export class AnalysisController {
   getNombresProvincias(@Param('departamento') departamento) {
     return this.analysisService.getNamesMunicipios(departamento);
   }
+  @Get('municios_provincias/:departamento')
+  getMuniciosProvincias(@Param('departamento') departamento) {
+    return this.analysisService.getNamesNombresProvincias(departamento);
+  }
 
   @Post('getheatsourcesbyprovincia')
   getHeatSourcesByProvincia(@Body() analysisDto: AnalysisDto) {
@@ -35,12 +39,12 @@ export class AnalysisController {
   }
 
   @Post('getheatsourcesbymunicio')
-  async getHeatSourcesByMunicio(@Body() analysisDto: AnalysisDto) {
+  getHeatSourcesByMunicio(@Body() analysisDto: AnalysisDto) {
     return this.analysisService.getHeatSourcesByMunicio(analysisDto);
   }
 
   @Post('countdepartamentosprovincias')
-  async getCountDepartamentosProvincias(@Body() analysisDto: AnalysisDto) {
+  getCountDepartamentosProvincias(@Body() analysisDto: AnalysisDto) {
     return this.analysisService.getCountDepartamentosProvincias(analysisDto);
   }
 

@@ -13,7 +13,7 @@ export class AuthService {
     @InjectRepository(UsersRepository)
     private usersRepository: UsersRepository,
     private jwtService: JwtService,
-  ) { }
+  ) {}
 
   async signUp(authCredentialsDto: AuthCredentialsDto): Promise<void> {
     return this.usersRepository.createUser(authCredentialsDto);
@@ -40,4 +40,3 @@ export class AuthService {
     return { accessToken };
   }
 }
-

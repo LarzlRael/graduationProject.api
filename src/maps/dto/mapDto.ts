@@ -10,5 +10,4 @@ export class MapDto {
   @IsOptional()
   @IsEnum(Departamento)
   departamento: Departamento;
-
 }

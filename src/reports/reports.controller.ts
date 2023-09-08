@@ -4,7 +4,7 @@ import { Response } from 'express';
 import { unlinkSync } from 'fs';
 @Controller('reports')
 export class ReportsController {
-  constructor(private reportsService: ReportsService) { }
+  constructor(private reportsService: ReportsService) {}
 
   @Get('getreportcvs/:dateStart/:dateEnd')
   async getReportCVS(
