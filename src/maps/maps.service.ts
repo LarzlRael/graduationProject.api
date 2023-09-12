@@ -5,6 +5,7 @@ import { createFileInfoRequest } from './utils/utils';
 
 import { MapResponse } from './interfaces/mapsResponse';
 import { departamentos, fire_history } from 'src/tables';
+import { TypeLocation } from './dto/orderBy';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const GeoJSON = require('geojson');
 
@@ -43,7 +44,7 @@ export class MapsService {
     return this.saveJsonAndParseAsGeoJson(query);
   }
 
-  async getHeatSourcesByProvincia(mapDTO: MapDto): Promise<MapResponse> {
+  /* async getHeatSourcesByProvincia(mapDTO: MapDto): Promise<MapResponse> {
     const query = `
     select a.longitude,a.latitude,a.longitude as lng, a.latitude as lat, a.brightness
     from fire_history as a
@@ -54,8 +55,8 @@ export class MapsService {
     and b.nombre_provincia in ('${mapDTO.provincia}')); 
     `;
     return this.saveJsonAndParseAsGeoJson(query);
-  }
-  async getHeatSourcesByMunicipio(mapDTO: MapDto): Promise<MapResponse> {
+  } */
+  /* async getHeatSourcesByMunicipio(mapDTO: MapDto): Promise<MapResponse> {
     const query = `
     select a.longitude,a.latitude,a.longitude as lng, a.latitude as lat, a.brightness
     from fire_history as a
@@ -65,6 +66,40 @@ export class MapsService {
     and '${mapDTO.dateEnd}'
     and b.nombre_municipio in ('${mapDTO.municipio}')); 
     `;
+    return this.saveJsonAndParseAsGeoJson(query);
+  } */
+
+  async getHeatSourcesByType(mapDTO: MapDto): Promise<MapResponse> {
+    const { typeLocation, dateStart, dateEnd, nameLocation } = mapDTO;
+
+    const tableMappings = {
+      [TypeLocation.provincia]: {
+        tableName: 'provincias',
+        fieldName: 'nombre_provincia',
+      },
+      [TypeLocation.municipio]: {
+        tableName: 'municipios',
+        fieldName: 'nombre_municipio',
+      },
+    };
+
+    if (!(typeLocation in tableMappings)) {
+      throw new Error(
+        'Debes proporcionar un tipo de consulta válido (provincia o municipio).',
+      );
+    }
+
+    const { tableName, fieldName } = tableMappings[typeLocation];
+
+    const query = `
+    select a.longitude, a.latitude, a.longitude as lng, a.latitude as lat, a.brightness
+    from fire_history as a
+    join ${tableName} as b
+    on ST_WITHIN(a.geometry, b.geom) 
+    where (a.acq_date BETWEEN '${dateStart}' and '${dateEnd}'
+    and ${fieldName} in ('${nameLocation}'));
+  `;
+
     return this.saveJsonAndParseAsGeoJson(query);
   }
 

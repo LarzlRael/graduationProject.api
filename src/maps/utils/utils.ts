@@ -3,7 +3,7 @@ import { extname } from 'path';
 import { Report } from '../../reports/interfaces/report.interface';
 import { readFileSync } from 'fs';
 
-import * as csv from 'csv/lib/sync';
+import * as csv from 'csv';
 
 export const createFileInfoRequest = (features: Feature[]) => {
   const data: MapResponse = {

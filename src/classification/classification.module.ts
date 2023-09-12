@@ -4,6 +4,6 @@ import { ClassificationService } from './classification.service';
 
 @Module({
   controllers: [ClassificationController],
-  providers: [ClassificationService]
+  providers: [ClassificationService],
 })
 export class ClassificationModule {}

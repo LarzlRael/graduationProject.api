@@ -20,7 +20,7 @@ import { diskStorage } from 'multer';
 import { readFile, writeFile, unlink, readFileSync, writeFileSync } from 'fs';
 
 /* import parse from 'csv-parse/lib/sync'; */
-import * as csv from 'csv/lib/sync';
+import * as csv from 'csv';
 import { Report } from 'src/reports/interfaces/report.interface';
 import { AnalysisService } from '../analysis/analysis.service';
 
@@ -76,11 +76,6 @@ export class MapsController {
     return this.mapsService.getHeatSourcesByDeparment(mapDto);
   }
 
-  @Post('getheatsourcesbyprovincia')
-  getHeatSourcesByProvincia(@Body() mapDto: MapDto) {
-    return this.mapsService.getHeatSourcesByProvincia(mapDto);
-  }
-
   @Get('getmidPoint/:location/:name')
   getMidPoint(@Param('location') location, @Param('name') name) {
     return this.mapsService.getMiddlePoint(location, name);
@@ -90,9 +85,19 @@ export class MapsController {
     return this.mapsService.getDepartamentPoligones(departament);
   }
 
-  @Post('getheatsourcesbymunicipio')
+  /* @Post('getheatsourcesbymunicipio')
   getHeatSourcesByMunicipio(@Body() mapDto: MapDto) {
     return this.mapsService.getHeatSourcesByMunicipio(mapDto);
+  }
+
+  @Post('getheatsourcesbyprovincia')
+  getHeatSourcesByProvincia(@Body() mapDto: MapDto) {
+    return this.mapsService.getHeatSourcesByProvincia(mapDto);
+  } */
+  @Post('get_heat_sources_by_type')
+  getHeatSourcesByType(@Body() mapDto: MapDto) {
+    console.log(mapDto);
+    return this.mapsService.getHeatSourcesByType(mapDto);
   }
 
   @Post('uploadcsvupdate')

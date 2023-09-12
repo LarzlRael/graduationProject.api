@@ -15,3 +15,9 @@ export enum Departamento {
   tarija = 'Tarija',
   chuquisaca = 'Chuquisaca',
 }
+export enum TypeLocation {
+  provincia = 'provincia',
+  municipio = 'municipio',
+  departamento = 'departamento',
+  pais = 'pais',
+}
