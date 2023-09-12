@@ -103,6 +103,18 @@ export class MapsService {
     return this.saveJsonAndParseAsGeoJson(query);
   }
 
+  async getHeatSourcesByAllType(mapDTO: MapDto): Promise<MapResponse> {
+    switch (mapDTO.typeLocation) {
+      case TypeLocation.pais:
+        return this.getHeatSourcesByBetweenDate(mapDTO);
+      case TypeLocation.departamento:
+        return this.getHeatSourcesByDeparment(mapDTO);
+      case TypeLocation.provincia:
+      case TypeLocation.municipio:
+        return this.getHeatSourcesByType(mapDTO);
+    }
+  }
+
   async getDepartamentPolygon(nombre_departamento: string) {
     const query = `
         SELECT jsonb_build_object(
@@ -175,7 +187,7 @@ export class MapsService {
           WHERE ${column} = $1
         ) AS subquery
       `;
-
+      console.log(table, column, name);
       const geojsonQuery = `
         SELECT ST_AsGeoJSON(geom)::json AS geojson
         FROM ${table}
@@ -195,12 +207,5 @@ export class MapsService {
       console.log(error);
       return '';
     }
-  }
-  async getDepartamentPoligones(departament: string) {
-    const poligones = await this.pool.query(
-      `SELECT ST_AsGeoJSON(geom)::json AS geojson FROM ${departamentos.tableName} WHERE ${departamentos.columns.name} = $1`,
-      [departament],
-    );
-    return poligones.rows[0].geojson;
   }
 }

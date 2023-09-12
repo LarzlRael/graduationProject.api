@@ -6,7 +6,6 @@ import {
   Post,
   Render,
   Res,
-  UploadedFile,
   UseInterceptors,
   UploadedFiles,
 } from '@nestjs/common';
@@ -17,11 +16,10 @@ import { join } from 'path';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { cvsFilter, editFileName, formatFileCsv } from './utils/utils';
 import { diskStorage } from 'multer';
-import { readFile, writeFile, unlink, readFileSync, writeFileSync } from 'fs';
+import { readFile, writeFile, unlink, writeFileSync } from 'fs';
 
 /* import parse from 'csv-parse/lib/sync'; */
 import * as csv from 'csv';
-import { Report } from 'src/reports/interfaces/report.interface';
 import { AnalysisService } from '../analysis/analysis.service';
 
 @Controller('maps')
@@ -80,10 +78,6 @@ export class MapsController {
   getMidPoint(@Param('location') location, @Param('name') name) {
     return this.mapsService.getMiddlePoint(location, name);
   }
-  @Get('getDepartmentPoligonoes/:departament')
-  getDepartamentPoligones(@Param('departament') departament) {
-    return this.mapsService.getDepartamentPoligones(departament);
-  }
 
   /* @Post('getheatsourcesbymunicipio')
   getHeatSourcesByMunicipio(@Body() mapDto: MapDto) {
@@ -98,6 +92,12 @@ export class MapsController {
   getHeatSourcesByType(@Body() mapDto: MapDto) {
     console.log(mapDto);
     return this.mapsService.getHeatSourcesByType(mapDto);
+  }
+
+  @Post('getHeatSourcesAllByType')
+  getHeatSourcesAllByType(@Body() mapDto: MapDto) {
+    console.log(mapDto);
+    return this.mapsService.getHeatSourcesByAllType(mapDto);
   }
 
   @Post('uploadcsvupdate')
