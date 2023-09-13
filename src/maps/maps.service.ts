@@ -103,16 +103,48 @@ export class MapsService {
     return this.saveJsonAndParseAsGeoJson(query);
   }
 
-  async getHeatSourcesByAllType(mapDTO: MapDto): Promise<MapResponse> {
+  async getHeatSourcesByAllType(mapDTO: MapDto) {
+    let heatResources: MapResponse;
+    let middlePoint: any;
+    console.log(mapDTO);
     switch (mapDTO.typeLocation) {
       case TypeLocation.pais:
-        return this.getHeatSourcesByBetweenDate(mapDTO);
+        heatResources = await this.getHeatSourcesByBetweenDate(mapDTO);
+        middlePoint = {
+          coordinates: {
+            lat: -16.290154,
+            lng: -63.588653,
+          },
+          poligono: {
+            type: 'Polygon',
+            coordinates: [],
+          },
+        };
+        break;
       case TypeLocation.departamento:
-        return this.getHeatSourcesByDeparment(mapDTO);
+        heatResources = await this.getHeatSourcesByDeparment(mapDTO);
+        middlePoint = await this.getMiddlePoint(
+          mapDTO.typeLocation,
+          mapDTO.departamento,
+        );
+        break;
       case TypeLocation.provincia:
       case TypeLocation.municipio:
-        return this.getHeatSourcesByType(mapDTO);
+        heatResources = await this.getHeatSourcesByType(mapDTO);
+        middlePoint = await this.getMiddlePoint(
+          mapDTO.typeLocation,
+          mapDTO.nameLocation,
+        );
+        break;
     }
+    /* const middlePoint = await this.getMiddlePoint(
+      mapDTO.typeLocation,
+      mapDTO.nameLocation,
+    ); */
+    return {
+      middlePoint,
+      heatResources,
+    };
   }
 
   async getDepartamentPolygon(nombre_departamento: string) {
@@ -166,13 +198,14 @@ export class MapsService {
   }
 
   async getMiddlePoint(table: string, name: string) {
+    const tablex = table + 's';
     const columns = {
       departamentos: 'nombre_departamento',
       municipios: 'nombre_municipio',
       provincias: 'nombre_provincia',
     };
 
-    const column = columns[table];
+    const column = columns[tablex];
 
     if (!column) {
       return '';
@@ -183,14 +216,14 @@ export class MapsService {
         SELECT ST_X(centroid) AS latitude, ST_Y(centroid) AS longitude
         FROM (
           SELECT ST_Centroid(ST_Union(geom)) AS centroid
-          FROM ${table}
+          FROM ${tablex}
           WHERE ${column} = $1
         ) AS subquery
       `;
-      console.log(table, column, name);
+
       const geojsonQuery = `
         SELECT ST_AsGeoJSON(geom)::json AS geojson
-        FROM ${table}
+        FROM ${tablex}
         WHERE ${column} = $1
       `;
 
