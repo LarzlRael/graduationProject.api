@@ -7,6 +7,7 @@ export class AnalysisDto {
   dateEnd: Date;
   provincia: string;
   municipio: string;
+  type: 'departamento' | 'provincia' | 'municipio';
   @IsOptional()
   @IsEnum(Departamento)
   departamento: Departamento;

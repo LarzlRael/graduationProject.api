@@ -156,15 +156,37 @@ export class AnalysisService {
     ]);
     return res.rows;
   }
+  async getCountByDepartamentosByType(analysisDto: AnalysisDto) {
+    if (analysisDto.type === 'municipio') {
+      return this.getCountDepartamentosMunicipios(analysisDto);
+    }
+    if (analysisDto.type === 'provincia') {
+      return this.getCountDepartamentosProvincias(analysisDto);
+    }
+    if (analysisDto.type === 'departamento') {
+      return this.getCountDepartamentos(analysisDto);
+    }
+  }
 
   async getCountDepartamentosProvincias(analysisDto: AnalysisDto) {
+    console.log('getCountProv');
+    console.log(analysisDto);
+
     const query = `
-    select b.nombre_provincia as nombre, count(b.nombre_provincia) as focos_calor
-    from fire_history as a
-    join provincias as b
-    on ST_WITHIN(a.geometry, b.geom) 
-    where (a.acq_date BETWEEN $1
-    and $2 and b.departamento in ($3)) GROUP by(b.nombre_provincia) order by focos_calor DESC 
+    SELECT
+    b.nombre_provincia AS nombre,
+    (
+        SELECT COUNT(*)
+        FROM fire_history AS a
+        WHERE ST_WITHIN(a.geometry, b.geom)
+        AND a.acq_date BETWEEN $1 AND $2
+    ) AS focos_calor
+  FROM
+    provincias AS b
+  WHERE
+    b.departamento IN ($3)
+      ORDER BY
+    focos_calor DESC; 
     `;
     const res = await this.pool.query(query, [
       analysisDto.dateStart,
@@ -177,13 +199,28 @@ export class AnalysisService {
   async getCountDepartamentosMunicipios(analysisDto: AnalysisDto) {
     console.log(analysisDto);
     const query = `
-    select b.nombre_municipio as nombre, count(b.nombre_municipio) as focos_calor
-    from fire_history as a
-    join municipios as b
-    on ST_WITHIN(a.geometry, b.geom) 
-    where (a.acq_date BETWEEN 
-    $1 and $2 and b.departamento in ($3)) 
-    GROUP by(b.nombre_municipio) order by focos_calor DESC
+    SELECT
+    nombre_municipio AS nombre,
+    focos_calor
+FROM
+    (
+        SELECT
+            b.nombre_municipio,
+            COUNT(*) AS focos_calor
+        FROM
+            fire_history AS a
+        JOIN
+            municipios AS b
+        ON
+            ST_WITHIN(a.geometry, b.geom)
+        WHERE
+            a.acq_date BETWEEN $1 AND $2
+            AND b.departamento IN ($3)
+        GROUP BY
+            b.nombre_municipio
+    ) AS subconsulta
+ORDER BY
+    focos_calor DESC;
     `;
     const res = await this.pool.query(query, [
       analysisDto.dateStart,
@@ -192,14 +229,31 @@ export class AnalysisService {
     ]);
     return res.rows;
   }
+
   async getCountDepartamentos(analysisDto: AnalysisDto) {
     const query = `
-    select b.nombre_departamento as nombre, count(b.nombre_departamento) as focos_calor
-    from fire_history as a
-    join departamentos as b
-    on ST_WITHIN(a.geometry, b.geom) 
-    where (a.acq_date BETWEEN $1 and $2) 
-    GROUP by(b.nombre_departamento) order by focos_calor DESC
+    SELECT
+    nombre,
+    focos_calor
+FROM
+    (
+        SELECT
+            b.nombre_departamento AS nombre,
+            COUNT(*) AS focos_calor
+        FROM
+            fire_history AS a
+        JOIN
+            departamentos AS b
+        ON
+            ST_WITHIN(a.geometry, b.geom)
+        WHERE
+            a.acq_date BETWEEN $1 AND $2
+        GROUP BY
+            b.nombre_departamento
+    ) AS subconsulta
+ORDER BY
+    focos_calor DESC;
+
     `;
     const res = await this.pool.query(query, [
       analysisDto.dateStart,

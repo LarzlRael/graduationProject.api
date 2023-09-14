@@ -52,6 +52,10 @@ export class AnalysisController {
   getCountDepartamentosMunicipios(@Body() analysisDto: AnalysisDto) {
     return this.analysisService.getCountDepartamentosMunicipios(analysisDto);
   }
+  @Post('countDepartamentoByType')
+  countDepartamentoByType(@Body() analysisDto: AnalysisDto) {
+    return this.analysisService.getCountByDepartamentosByType(analysisDto);
+  }
 
   @Post('getcountdepartamentos')
   getCountDepartamentos(@Body() analysisDto: AnalysisDto) {
