@@ -213,12 +213,12 @@ export class MapsService {
 
     try {
       const centroidQuery = `
-        SELECT ST_X(centroid) AS latitude, ST_Y(centroid) AS longitude
-        FROM (
-          SELECT ST_Centroid(ST_Union(geom)) AS centroid
-          FROM ${tablex}
-          WHERE ${column} = $1
-        ) AS subquery
+      SELECT ST_Y(centroid) AS latitude, ST_X(centroid) AS longitude
+  FROM (
+    SELECT ST_Centroid(ST_Union(geom)) AS centroid
+    FROM ${tablex}
+    WHERE ${column} = $1
+  ) AS subquery
       `;
 
       const geojsonQuery = `
