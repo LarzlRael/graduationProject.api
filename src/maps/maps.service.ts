@@ -26,7 +26,7 @@ export class MapsService {
 
   async getHeatSourcesByBetweenDate(mapdto: MapDto): Promise<MapResponse> {
     const query = `
-    SELECT distinct latitude , longitude ,brightness, longitude as lng, latitude as lat 
+    SELECT distinct latitude , longitude ,brightness, longitude as lng, latitude as lat
     FROM ${fire_history}
     WHERE acq_date BETWEEN '${mapdto.dateStart}' AND '${mapdto.dateEnd}'
     order by brightness`;
@@ -189,6 +189,7 @@ export class MapsService {
       const geojson: MapResponse = await GeoJSON.parse(res.rows, {
         Point: ['lat', 'lng'],
       });
+
       const data = await createFileInfoRequest(geojson.features);
 
       return data;
@@ -214,11 +215,11 @@ export class MapsService {
     try {
       const centroidQuery = `
       SELECT ST_Y(centroid) AS latitude, ST_X(centroid) AS longitude
-  FROM (
-    SELECT ST_Centroid(ST_Union(geom)) AS centroid
-    FROM ${tablex}
-    WHERE ${column} = $1
-  ) AS subquery
+      FROM (
+        SELECT ST_Centroid(ST_Union(geom)) AS centroid
+        FROM ${tablex}
+        WHERE ${column} = $1
+      ) AS subquery
       `;
 
       const geojsonQuery = `

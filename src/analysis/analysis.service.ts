@@ -1,26 +1,25 @@
 import { Injectable, Inject } from '@nestjs/common';
 import * as moment from 'moment';
 import { Pool } from 'pg';
-import {
-  departamentos,
-  fire_history,
-  municipios,
-  provincias,
-} from 'src/tables';
+import { departamentos, fire_history, municipios } from 'src/tables';
 import { AnalysisDto, CountDto } from './dto/analysis.dto';
 
 @Injectable()
 export class AnalysisService {
   constructor(@Inject('DATABASE_POOL') private pool: Pool) {}
 
-  async getFirstAndLastDate(): Promise<string[]> {
-    const from = `select acq_date from ${fire_history} order by acq_date DESC limit 1 ;`;
-    const to = `select acq_date from ${fire_history} order by acq_date ASC limit 1 ;`;
+  async getFirstAndLastDate() {
+    const query = `SELECT MIN(acq_date) AS min_date, MAX(acq_date) AS max_date FROM ${fire_history};`;
 
-    const res1 = await this.pool.query(from);
-    const res2 = await this.pool.query(to);
-    return [res2.rows[0].acq_date, res1.rows[0].acq_date];
+    const res = await this.pool.query(query);
+    const { min_date, max_date } = res.rows[0];
+
+    return {
+      min_date,
+      max_date,
+    };
   }
+
   async verifyDatesDB(datestart: Date, dateEnd: Date, instrument: string) {
     const verify = `select count(acq_date) as cantidad from fire_history where instrument=$1 and acq_date BETWEEN $2 and $3`;
     const resp = await this.pool.query(verify, [
