@@ -8,6 +8,8 @@ import {
   Res,
   UseInterceptors,
   UploadedFiles,
+  HttpException,
+  HttpStatus,
 } from '@nestjs/common';
 import { Response } from 'express';
 import { MapsService } from './maps.service';
@@ -148,23 +150,22 @@ export class MapsController {
         );
       });
 
-      if (verify) {
-        const verifyInsertion = await this.mapsService.saveNewData(pathOut);
-        if (verifyInsertion) {
-          res.json({
-            ok: true,
-            msg: 'Datos subidos y actualizados correctamente',
-          });
-        } else {
-          res.json({
-            ok: false,
-            msg: 'Hubo con error, intenenlo nuevamente',
-          });
-        }
+      if (!verify) {
+        return res.status(HttpStatus.BAD_REQUEST).json({
+          status: 'BAD REQUEST',
+          message: 'La base de datos ya ha sido actualizada',
+        });
+      }
+      const verifyInsertion = await this.mapsService.saveNewData(pathOut);
+      if (verifyInsertion) {
+        res.status(HttpStatus.OK).json({
+          status: 'BAD REQUEST',
+          message: 'Datos subidos y actualizados correctamente',
+        });
       } else {
-        res.json({
-          ok: false,
-          msg: 'Error, la base de datos ya fue actualizada',
+        res.status(HttpStatus.BAD_REQUEST).json({
+          status: 'BAD REQUEST',
+          message: 'hubo un error al actualizar la base de datos',
         });
       }
 
