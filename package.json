@@ -37,7 +37,6 @@
     "class-validator": "^0.14.0",
     "compression": "^1.7.4",
     "csv": "^6.3.3",
-    "csv-parse": "^5.5.0",
     "express-handlebars": "^7.1.2",
     "geojson": "^0.5.0",
     "geojson2shp": "^0.5.0",

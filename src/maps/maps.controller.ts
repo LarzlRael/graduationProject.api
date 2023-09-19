@@ -18,8 +18,7 @@ import { cvsFilter, editFileName, formatFileCsv } from './utils/utils';
 import { diskStorage } from 'multer';
 import { readFile, writeFile, unlink, writeFileSync } from 'fs';
 
-/* import parse from 'csv-parse/lib/sync'; */
-import * as csv from 'csv';
+import { stringify } from 'csv/sync';
 import { AnalysisService } from '../analysis/analysis.service';
 
 @Controller('maps')
@@ -114,22 +113,28 @@ export class MapsController {
     @Res() res: Response,
     @UploadedFiles() files: Express.Multer.File[],
   ) {
+    console.log(files);
     files.forEach(async (file) => {
       const pathIn = join(__dirname, '../../', `files/${file.filename}`);
       // Load and parsing data
-      const { data, fechas } = await formatFileCsv(pathIn);
-      //Save
 
+      const {
+        data,
+        firstAcqDate,
+        lastAcqDate,
+        instrument,
+      } = await formatFileCsv(pathIn);
+      //Save
       const verify = await this.analisysServices.verifyDatesDB(
-        new Date(fechas[0].acq_date),
-        new Date(fechas[1].acq_date),
-        fechas[1].instrument,
+        firstAcqDate,
+        lastAcqDate,
+        instrument,
       );
 
       const pathOut = join(__dirname, '../../', `files/cvsconvertido.csv`);
       writeFileSync(
         pathOut,
-        (csv.stringify as any)(data, { header: false, quoted: false }),
+        stringify(data, { header: false, quoted: false }),
         'utf-8',
       );
 

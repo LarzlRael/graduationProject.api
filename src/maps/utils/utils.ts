@@ -3,7 +3,7 @@ import { extname } from 'path';
 import { Report } from '../../reports/interfaces/report.interface';
 import { readFileSync } from 'fs';
 
-import * as csv from 'csv';
+import { parse } from 'csv/sync';
 
 export const createFileInfoRequest = (features: Feature[]) => {
   const data: MapResponse = {
@@ -78,7 +78,7 @@ export const convertDepartmentsToString = (departamentos: string): string => {
 export const formatFileCsv = async (pathIn: string) => {
   const strcsv = readFileSync(pathIn, 'utf-8');
   let data: Report[] = [];
-  data = (csv.parse as any)(strcsv, {
+  data = parse(strcsv, {
     bom: true,
     cast: false,
     columns: true,
@@ -95,7 +95,9 @@ export const formatFileCsv = async (pathIn: string) => {
       simpleData.confidence = 0;
     }
   });
-  const lastAcqDate = data[data.length - 1];
-  const firstAcqDate = data[0];
-  return { data, fechas: [firstAcqDate, lastAcqDate] };
+
+  const lastAcqDate = new Date(data[data.length - 1].acq_date);
+  const firstAcqDate = new Date(data[0].acq_date);
+  const instrument = data[data.length - 1].instrument;
+  return { data, firstAcqDate, lastAcqDate, instrument };
 };
