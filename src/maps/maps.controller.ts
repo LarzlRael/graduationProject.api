@@ -119,7 +119,7 @@ export class MapsController {
     files.forEach(async (file) => {
       const pathIn = join(__dirname, '../../', `files/${file.filename}`);
       // Load and parsing data
-
+      //? TODO REFACTRING THIS
       const {
         data,
         firstAcqDate,
@@ -174,9 +174,8 @@ export class MapsController {
         console.log('archivo eliminado corretamente');
       });
       unlink(pathOut, (err) => {
-        if (err) {
-          console.log(err);
-        }
+        if (err) console.log(err);
+
         console.log('archivo eliminado corretamente');
       });
     });
