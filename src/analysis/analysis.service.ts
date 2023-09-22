@@ -31,37 +31,41 @@ export class AnalysisService {
     return resp.rows[0].cantidad == 0;
   }
   async getMonthYearAvailabes() {
-    const from = `select acq_date from ${fire_history} order by acq_date ASC limit 1 ;`;
-    const to = `select acq_date from ${fire_history} order by acq_date DESC limit 1 ;`;
+    const dateRangeQuery = `
+    SELECT
+     min(acq_date) AS min_date,
+     max(acq_date) AS max_date
+    FROM
+      ${fire_history};
+  `;
+    const result = await this.pool.query(dateRangeQuery);
 
-    const res1 = await this.pool.query(from);
-    const res2 = await this.pool.query(to);
+    const startDate = moment(result.rows[0].min_date);
+    const endDate = moment(result.rows[0].max_date);
 
     const getAvailablesMounts = `
     SELECT date_trunc('day', dd):: date
     FROM generate_series
-      ('${moment(res1.rows[0].acq_date).utc().format('YYYY-MM-DD')}':: timestamp
-        , '${moment(res2.rows[0].acq_date)
-          .utc()
-          .format('YYYY-MM-DD')}':: timestamp
-        , '1 month':: interval) dd
+      ('${startDate}':: timestamp,
+       '${endDate}':: timestamp,
+        '1 month':: interval) dd
       ;
       `;
     const execute = await this.pool.query(getAvailablesMounts);
+
     const array = [];
     execute.rows.map((row) => {
-      const month = moment(row.date_trunc).utc().format('MM');
-      const year = moment(row.date_trunc).utc().format('YYYY');
-      const date = moment(row.date_trunc).utc().format('MM-YYYY');
-      if (parseInt(date.split('-')[0]) === 1) {
+      const date = moment(row.date_trunc);
+
+      if (date.month() + 1 == 1) {
         array.push({
           month: 0,
-          year: parseInt(date.split('-')[1]),
+          year: date.year(),
         });
       }
       array.push({
-        month: parseInt(month),
-        year: parseInt(year),
+        month: date.month() + 1,
+        year: date.year(),
       });
     });
 

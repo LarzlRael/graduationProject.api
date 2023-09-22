@@ -7,7 +7,7 @@ export enum Departamento {
   bolivia = 'Bolivia',
   lapaz = 'La Paz',
   oruro = 'Oruro',
-  potosi = 'Potosi',
+  potosi = 'Potosí',
   santacruz = 'Santa Cruz',
   beni = 'Beni',
   pando = 'Pando',
