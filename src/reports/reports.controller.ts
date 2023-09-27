@@ -1,52 +1,25 @@
-import { Controller, Get, Param, Res } from '@nestjs/common';
+import { Body, Controller, Get, Post, Res } from '@nestjs/common';
 import { ReportsService } from './reports.service';
 import { Response } from 'express';
 import { unlinkSync } from 'fs';
+import { ReportDto } from './dto/report.dto';
 @Controller('reports')
 export class ReportsController {
   constructor(private reportsService: ReportsService) {}
 
-  @Get('getreportcvs/:dateStart/:dateEnd')
-  async getReportCVS(
-    @Res() res: Response,
-    @Param('dateStart') dateStart,
-    @Param('dateEnd') dateEnd,
-  ) {
-    const report = await this.reportsService.getReportCVS(dateStart, dateEnd);
-    if (report.ok) {
-      return res.json({
-        ok: true,
-        csv: report.filename,
-      });
-    } else {
-      return res.json({
-        ok: false,
-        mensaje: 'No se econtraron registro de focos de calor en esa fecha',
-      });
-    }
+  @Post('getreportcvs')
+  getReportCVS(@Body() reportDto: ReportDto) {
+    return this.reportsService.getReportCVS(reportDto);
   }
 
-  @Get('geojsonreport/:dateStart/:dateEnd')
-  async geoJsonReport(
-    @Res() res: Response,
-    @Param('dateStart') dateStart,
-    @Param('dateEnd') dateEnd,
-  ) {
-    const report = await this.reportsService.getReportGeoJSON(
-      dateStart,
-      dateEnd,
-    );
-    return res.json(report);
+  @Post('geojsonreport')
+  geoJsonReport(@Body() reportDto: ReportDto) {
+    return this.reportsService.getReportGeoJSON(reportDto);
   }
-  @Get('getshapefile/:dateStart/:dateEnd')
-  async getShapeFIle(
-    @Res() res: Response,
-    @Param('dateStart') dateStart,
-    @Param('dateEnd') dateEnd,
-  ) {
+  @Post('getshapefile')
+  async getShapeFIle(@Res() res: Response, @Body() reportDto: ReportDto) {
     const shapeFilePath = await this.reportsService.convertGeoJsonToshapFile(
-      dateStart,
-      dateEnd,
+      reportDto,
     );
     return res.download(shapeFilePath.shapeFilePath, function () {
       unlinkSync(shapeFilePath.shapeFilePath);

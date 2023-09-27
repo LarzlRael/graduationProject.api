@@ -72,17 +72,6 @@ export class AnalysisService {
     return array.reverse();
   }
 
-  async getDateFromDatabase(count: number, from: number): Promise<string[]> {
-    const queryText = `SELECT distinct acq_date from ${fire_history} order by acq_date DESC limit $1 offset $2;`;
-    const res = await this.pool.query(queryText, [count, from]);
-    const rowsJson = res.rows;
-    const array = [];
-    rowsJson.map((row) => {
-      array.push(row.acq_date);
-    });
-    return array;
-  }
-
   async getNHeatSourceByDepartament(analysisDto: AnalysisDto) {
     const query = `select a.longitude as lng, a.latitude as lat, a.brightness
     from ${fire_history} as a
